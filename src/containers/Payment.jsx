@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
-import { PaypalButtom } from 'react-paypal-button'
+import { PayPalButton } from 'react-paypal-button'
 import AppContext from '../context/AppContext'
-import handleSumTotal from '../utils/index'
 import '../styles/components/Payment.css';
 
-const Payments = ({ history }) => {
+const Payment = ({ history }) => {
   const { state, addNewOrder } = useContext(AppContext)
   const { cart, buyer } = state
 
@@ -14,28 +13,34 @@ const Payments = ({ history }) => {
     currency: 'USD'
   }
 
-  const buttomStyles = {
+  const buttonStyles = {
     layout: 'vertical',
     shape: 'rect'
   }
 
   const handlePaymentSuccess = (data) => {
     console.log(data);
-    if(data.status === 'COMPLETED') {
+    if (data.status === 'COMPLETED') {
       const newOrder = {
         buyer,
         product: cart,
-        paments: data
+        payment: data
       }
-      addNewOrder(newOrder)
+      addNewOrder(newOrder);
       history.push('/checkout/success')
     }
+  }
+
+  const handleSumTotal = () => {
+    const reducer = (accumulator, currentValue) => accumulator + currentValue.price;
+    const sum = cart.reduce(reducer, 0);
+    return sum;
   }
 
   return (
     <div className="Payment">
       <div className="Payment-content">
-        <h3>Resumen del pedido:</h3>
+        <h3>Resument del pedido:</h3>
         {cart.map((item) => (
           <div className="Payment-item" key={item.title}>
             <div className="Payment-element">
@@ -49,9 +54,9 @@ const Payments = ({ history }) => {
           </div>
         ))}
         <div className="Payment-button">
-          <PaypalButtom 
+          <PayPalButton
             paypalOptions={paypalOptions}
-            buttomStyles={buttomStyles}
+            buttonStyles={buttonStyles}
             amount={handleSumTotal()}
             onPaymentStart={() => console.log('Start Payment')}
             onPaymentSuccess={data => handlePaymentSuccess(data)}
@@ -60,8 +65,9 @@ const Payments = ({ history }) => {
           />
         </div>
       </div>
+      <div />
     </div>
   );
-};
+}
 
-export default Payments;
+export default Payment;
