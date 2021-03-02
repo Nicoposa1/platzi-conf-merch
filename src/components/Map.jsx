@@ -1,7 +1,7 @@
 import React from 'react'
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
 
-export default function Map() {
+export default function Map({ data }) {
 
   const mapStyles={
     height: "50vh",
@@ -9,8 +9,8 @@ export default function Map() {
   }
 
   const dafaultCenter = {
-    lat: 19.4267261,
-    lng: -99.1718796
+    lat: data.lat,
+    lng: data.lng
   }
 
   return (
